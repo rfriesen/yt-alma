@@ -50,5 +50,5 @@ for phi in phiarray:
     Nvec = 512
     cam = pf.h.camera(c, L, W, (768,Nvec), tf,no_ghost=False,north_vector=[1.0,0,0])
 #Define a custom file output here.
-    image = cam.snapshot("OrionAMovie/OrionA_"+ctstring.zfill(3)+".png" % pf, 8.0)
+    image = cam.snapshot(dir+"OrionAMovie/OrionA_"+ctstring.zfill(3)+".png" % pf, 8.0)
 
