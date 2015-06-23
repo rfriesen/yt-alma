@@ -5,16 +5,23 @@ from astropy.io import fits
 #from aplpy.image_util import percentile_function
 
 # Loading fits data
-dir = '/srv/astro/erosolo/n253/cubes/newrelease/lines/robust/non_pbcor/'
+dir = '/home/rachel/current_work/GAS/data/'
 tracer = 'hcn'    
-cube= fits.getdata(dir+'ngc253_'+tracer+'_clean_RO.fits')
+cube= fits.getdata(dir+'OrionA_NH3_11_base1.fits')
 
 #ALMA data has a polarization axis.  Collapse along it.
-cube = cube.sum(axis=0)
+# Not true for GBT cubes
+#cube = cube.sum(axis=0)
+
+# Indices for main NH3 component only
+# Cube is in vyx format
+i1 = 325
+i2 = 450
+cube = [i1:i2,:,:]
 
 #Log transform the data in order to get on a viewable scale
 cube = np.log(cube)
-# Masking out nan elements
+# Masking out nan elemenst
 cube[np.isnan(cube)] = np.nanmin(cube)
 
 # Loading data into yt structure
@@ -22,7 +29,7 @@ data = dict(Density = cube)
 pf = load_uniform_grid(data, cube.shape, 9e16)
 
 # Set the min/max to the data set (in units of log(I))
-mi,ma = -5.7,-1.76
+mi,ma = -2.,0.98
 
 
 # Define a colour transfer function.
@@ -43,5 +50,5 @@ for phi in phiarray:
     Nvec = 512
     cam = pf.h.camera(c, L, W, (768,Nvec), tf,no_ghost=False,north_vector=[1.0,0,0])
 #Define a custom file output here.
-    image = cam.snapshot("hcnmovie/ngc253_"+ctstring.zfill(3)+".png" % pf, 8.0)
+    image = cam.snapshot("OrionAMovie/OrionA_"+ctstring.zfill(3)+".png" % pf, 8.0)
 
